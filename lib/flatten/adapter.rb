@@ -4,5 +4,6 @@ module Flatten
 
     autoload :FileAdapter, File.join(File.dirname(__FILE__), 'adapter', 'file_adapter.rb')
     autoload :TokyoCabinetAdapter, File.join(File.dirname(__FILE__), 'adapter', 'tokyo_cabinet_adapter.rb')
+    autoload :TokyoTyrantAdapter, File.join(File.dirname(__FILE__), 'adapter', 'tokyo_tyrant_adapter.rb')
   end
 end

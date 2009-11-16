@@ -9,7 +9,7 @@ end
 namespace :spec do
   desc 'Run specs for all environment options'
   task :all do
-    %w(FILE TOKYO_CABINET).each do |adapter|
+    %w(FILE TOKYO_CABINET TOKYO_TYRANT).each do |adapter|
       fork do
         ENV['ADAPTER'] = adapter
         Rake::Task[:spec].invoke
