@@ -1,5 +1,3 @@
-require 'rubygems'
-
 ENV['RUBYOPT'] = '-W1'
 
 task :environment do
@@ -8,4 +6,4 @@ end
 
 Dir['tasks/**/*.rake'].each { |t| load t }
 
-task :default => :spec
+task :default => :"spec:all"

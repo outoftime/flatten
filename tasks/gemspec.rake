@@ -1,5 +1,3 @@
-gem 'technicalpickles-jeweler', '~> 0.8.1'
-
 require 'jeweler'
 
 Jeweler::Tasks.new do |s|
