@@ -1,0 +1,8 @@
+== Flatten
+
+Flatten is a small framework for document-oriented secondary persistence of
+Ruby objects. Its purpose is to provide an alternative to caching for
+optimization of applications whose content is described by complex relational
+structures but fits readily into a document-oriented paradigm.
+
+Flatten is a work in progress.

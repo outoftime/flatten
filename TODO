@@ -1,0 +1,3 @@
+* Sessions
+* Multiple adapters - MongoDB, Tokyo Cabinet, BDB(?), etc.
+* Reusable embedded resources
