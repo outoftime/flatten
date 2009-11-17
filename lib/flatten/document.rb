@@ -28,6 +28,16 @@ module Flatten
       model
     end
 
+    def update(models, *properties)
+      Array(models).each do |model|
+        data = Flatten.adapter.read(self.name, model.id)
+        properties.each do |property|
+          update_data(data, model, property)
+        end
+        Flatten.adapter.write(self.name, model.id, {}, data)
+      end
+    end
+
     def alternate_id(*fields)
       alternate_id_fields.concat(fields)
       fields.each do |field|

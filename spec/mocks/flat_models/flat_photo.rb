@@ -1,4 +1,4 @@
 class FlatPhoto < Flatten::Resource
   property :path
-  property :dimensions
+  property :caption
 end

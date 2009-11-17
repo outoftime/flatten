@@ -2,18 +2,18 @@ require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'Flatten' do
   before :each do
-    post = Post.new do |p|
-      p.title = 'Test Title'
-      p.category_ids.concat([1, 3, 5])
-      p.blog = Blog.new do |b|
-        b.name = 'Test Blog'
+    @post = Post.new do |post|
+      post.title = 'Test Title'
+      post.category_ids.concat([1, 3, 5])
+      post.blog = Blog.new do |blog|
+        blog.name = 'Test Blog'
       end
-      p.comments << Comment.new { |comment| comment.text = 'First comment' }
-      p.comments << Comment.new { |comment| comment.text = 'Second comment' }
-      p.photos << Photo.new { |photo| photo.path = '/000/000/001/1.jpg' }
+      post.comments << Comment.new { |comment| comment.text = 'First comment' }
+      post.comments << Comment.new { |comment| comment.text = 'Second comment' }
+      post.photos << Photo.new { |photo| photo.path = '/000/000/001/1.jpg' }
     end
-    FlatPost.flatten(post)
-    @id = post.id
+    FlatPost.flatten(@post)
+    @id = @post.id
   end
 
   it 'should save and retrieve scalar properties' do
@@ -88,5 +88,63 @@ describe 'Flatten' do
   it 'should retrieve objects using alternate identifiers' do
     post = FlatPost.get_by_permalink('test-title')
     post.title.should == 'Test Title'
+  end
+
+  it 'should do partial update of property' do
+    @post.title = 'New Title'
+    %w(body category_ids blog comments photos featured_photo).each do |method|
+      @post.should_not_receive method
+    end
+    FlatPost.update(@post, :title)
+    FlatPost.get(@id).title.should == 'New Title'
+  end
+
+  it 'should do partial update of embedded property' do
+    @post.featured_photo.path = '1.jpg'
+    %w(title body category_ids blog comments).each do |method|
+      @post.should_not_receive method
+    end
+    @post.featured_photo.should_not_receive :caption
+    FlatPost.update(@post, :featured_photo => :path)
+    FlatPost.get(@id).featured_photo.path.should == '1.jpg'
+  end
+
+  it 'should do a partial update of two embedded properties' do
+    @post.featured_photo.path = '1.jpg'
+    @post.featured_photo.caption = 'Having fun!'
+    %w(title body category_ids blog comments).each do |method|
+      @post.should_not_receive method
+    end
+    FlatPost.update(@post, :featured_photo => [:path, :caption])
+    FlatPost.get(@id).featured_photo.path.should == '1.jpg'
+    FlatPost.get(@id).featured_photo.caption.should == 'Having fun!'
+  end
+
+  it 'should do a partial update of an entire embedded resource' do
+    @post.featured_photo.path = '1.jpg'
+    @post.featured_photo.caption = 'Having fun!'
+    %w(title body category_ids blog comments).each do |method|
+      @post.should_not_receive method
+    end
+    FlatPost.update(@post, :featured_photo)
+    FlatPost.get(@id).featured_photo.path.should == '1.jpg'
+    FlatPost.get(@id).featured_photo.caption.should == 'Having fun!'
+  end
+
+  it 'should raise an ArgumentError if a partial update is attempted against a property of an embedded collection' do
+    lambda do
+      FlatPost.update(@post, :photos => :path)
+    end.should raise_error(ArgumentError)
+  end
+
+  it 'should perform partial update on entire embedded collection' do
+    @post.photos.first.path = '1.jpg'
+    @post.photos.first.caption = 'Having fun!'
+    %w(title body category_ids blog comments featured_photo).each do |method|
+      @post.should_not_receive method
+    end
+    FlatPost.update(@post, :photos)
+    FlatPost.get(@id).photos.first.path.should == '1.jpg'
+    FlatPost.get(@id).photos.first.caption.should == 'Having fun!'
   end
 end

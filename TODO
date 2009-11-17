@@ -1,5 +1,3 @@
-* Reusable embedded resources
-* Partial updates
 * Deletions
 
 * Multiple adapters - MongoDB,  BDB(?), etc.

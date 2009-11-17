@@ -31,7 +31,7 @@ module Flatten
       properties.concat(names.map { |name| name.to_sym })
       for name in names
         properties << name.to_sym
-        module_eval(<<-RUBY, __FILE__, __LINE__)
+        module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
           def #{name}
             unless defined?(@#{name})
               @#{name} = @data[#{name.to_sym.inspect}]
@@ -99,6 +99,32 @@ module Flatten
 
     def embedded_collections
       @embedded_collections ||= {}
+    end
+
+    protected
+
+    def update_data(data, model, property)
+      if property.is_a?(Hash)
+        property.each_pair do |embed, embedded_properties|
+          if embedded_resources[embed.to_sym]
+            Array(embedded_properties).each do |embedded_property|
+              update_data(data[embed.to_sym], model.send(embed), embedded_property)
+            end
+          elsif embedded_collections[embed.to_sym]
+            raise ArgumentError, "Can't do partial update on single property in embedded collection"
+          end
+        end
+      elsif embedded_resources.has_key?(property.to_sym)
+        resource = embedded_resources[property.to_sym]
+        data[property.to_sym] = resource.to_data(model.send(property))
+      elsif embedded_collections.has_key?(property.to_sym)
+        resource = embedded_collections[property.to_sym]
+        data[property.to_sym] = model.send(property).map do |value|
+          resource.to_data(value)
+        end
+      else
+        data[property.to_sym] = model.send(property)
+      end
     end
   end
 end
