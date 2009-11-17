@@ -17,6 +17,14 @@ class Post
     @comments ||= []
   end
 
+  def photos
+    @photos ||= []
+  end
+
+  def featured_photo
+    photos.first
+  end
+
   def permalink
     title.downcase.gsub(/\W+/, '-') if title
   end

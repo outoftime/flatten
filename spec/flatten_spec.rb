@@ -10,6 +10,7 @@ describe 'Flatten' do
       end
       p.comments << Comment.new { |comment| comment.text = 'First comment' }
       p.comments << Comment.new { |comment| comment.text = 'Second comment' }
+      p.photos << Photo.new { |photo| photo.path = '/000/000/001/1.jpg' }
     end
     FlatPost.flatten(post)
     @id = post.id
@@ -41,6 +42,18 @@ describe 'Flatten' do
     post.blog.name.should == 'Test Blog'
   end
 
+  it 'should embed associated objects using externally defined resource' do
+    FlatPost.get(@id).featured_photo.path.should == '/000/000/001/1.jpg'
+  end
+
+  it 'should raise an ArgumentError if no block or :using is passed for embed' do
+    lambda do
+      FlatPost.module_eval do
+        embed :bogus
+      end
+    end.should raise_error(ArgumentError)
+  end
+
   it 'should return nil for nil associated objects' do
     FlatPost.flatten(Post.new { |post| @id = post.id })
     post = FlatPost.get(@id)
@@ -57,6 +70,19 @@ describe 'Flatten' do
   it 'should freeze collections before returning them' do
     post = FlatPost.get(@id)
     post.comments.should be_frozen
+  end
+
+  it 'should embed collections using externally defined resource' do
+    post = FlatPost.get(@id)
+    post.photos.first.path.should == '/000/000/001/1.jpg'
+  end
+
+  it 'should raise an ArgumentError if no block or :using is passed for embed_collection' do
+    lambda do
+      FlatPost.module_eval do
+        embed_collection :bogus
+      end
+    end.should raise_error(ArgumentError)
   end
 
   it 'should retrieve objects using alternate identifiers' do

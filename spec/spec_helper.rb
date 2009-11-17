@@ -31,13 +31,13 @@ when 'TOKYO_CABINET'
     File.join(data_dir, 'test.tch')
   )
 when 'TOKYO_TYRANT'
-  Flatten.adapter = Flatten::Adapter::TokyoTyrantAdapter.new
   tt_pid = nil
   Spec::Runner.configure do |config|
     config.before(:all) do
       tt_pid = fork do
         exec("ttserver #{File.join(data_dir, 'test.tch')} > /dev/null")
       end
+      Flatten.adapter = Flatten::Adapter::TokyoTyrantAdapter.new
     end
 
     config.after(:all) do

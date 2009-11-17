@@ -1,3 +1,6 @@
-* Sessions
-* Multiple adapters - MongoDB, Tokyo Cabinet, BDB(?), etc.
 * Reusable embedded resources
+* Partial updates
+* Deletions
+
+* Multiple adapters - MongoDB,  BDB(?), etc.
+* Sessions

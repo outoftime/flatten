@@ -10,4 +10,7 @@ class FlatPost < Flatten::Document
   embed_collection :comments do
     property :text
   end
+
+  embed_collection :photos, :using => FlatPhoto
+  embed :featured_photo, :using => FlatPhoto
 end

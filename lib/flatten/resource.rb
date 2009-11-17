@@ -42,8 +42,16 @@ module Flatten
       end
     end
 
-    def embed(name, &block)
-      resource_class = Class.new(self, &block)
+    def embed(name, options = {}, &block)
+      resource_class =
+        if block then Class.new(self, &block)
+        elsif options[:using] then options[:using]
+        else
+          raise(
+            ArgumentError,
+            "Must provide either block or :using option to embed_collection"
+          )
+        end
       embedded_resources[name.to_sym] = resource_class
       module_eval(<<-RUBY, __FILE__, __LINE__)
         def #{name}
@@ -56,8 +64,16 @@ module Flatten
       RUBY
     end
 
-    def embed_collection(name, &block)
-      resource_class = Class.new(self, &block)
+    def embed_collection(name, options = {}, &block)
+      resource_class =
+        if block then Class.new(self, &block)
+        elsif options[:using] then options[:using]
+        else
+          raise(
+            ArgumentError,
+            "Must provide either block or :using option to embed_collection"
+          )
+        end
       embedded_collections[name.to_sym] = resource_class
       module_eval(<<-RUBY, __FILE__, __LINE__)
       def #{name}
