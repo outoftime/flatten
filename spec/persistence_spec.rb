@@ -67,9 +67,15 @@ describe Flatten do
     end
   end
 
-  it 'should freeze collections before returning them' do
+  it 'should not allow modification to collections' do
     post = FlatPost.get(@id)
-    post.comments.should be_frozen
+    comments = post.comments
+    lambda { comments << post.comments.first }.should raise_error
+    lambda { comments.clear }.should raise_error
+    lambda { comments.push }.should raise_error
+    lambda { comments.pop }.should raise_error
+    lambda { comments.unshift }.should raise_error
+    lambda { comments.shift }.should raise_error
   end
 
   it 'should embed collections using externally defined resource' do

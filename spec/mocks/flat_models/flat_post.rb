@@ -9,6 +9,7 @@ class FlatPost < Flatten::Document
 
   embed_collection :comments do
     property :text
+    scope(:with_text) { |comments| comments.select { |comment| comment.text }}
   end
 
   embed_collection :photos, :using => FlatPhoto
