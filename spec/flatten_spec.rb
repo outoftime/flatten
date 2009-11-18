@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe 'Flatten' do
+describe Flatten do
   before :each do
     @post = Post.new do |post|
       post.title = 'Test Title'
@@ -156,5 +156,10 @@ describe 'Flatten' do
     FlatPost.update(@post)
     FlatPost.get(@id).title.should == 'Different Title'
     FlatPost.get(@id).blog.name.should == 'Different Blog'
+  end
+
+  it 'should delete flattened objects' do
+    FlatPost.delete(@post)
+    FlatPost.get(@id).should be_nil
   end
 end

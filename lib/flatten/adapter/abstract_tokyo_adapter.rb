@@ -30,6 +30,10 @@ module Flatten
         end
       end
 
+      def delete(class_name, id)
+        database_try { @database.out(key(class_name, id)) }
+      end
+
       private
 
       def database_try

@@ -28,18 +28,20 @@ module Flatten
       model
     end
 
-    def update(models, *properties)
-      Array(models).each do |model|
-        if properties.empty?
-          flatten(model)
-        else
-          data = Flatten.adapter.read(self.name, model.id)
-          properties.each do |property|
-            update_data(data, model, property)
-          end
-          Flatten.adapter.write(self.name, model.id, {}, data)
+    def update(model, *properties)
+      if properties.empty?
+        flatten(model)
+      else
+        data = Flatten.adapter.read(self.name, model.id)
+        properties.each do |property|
+          update_data(data, model, property)
         end
+        Flatten.adapter.write(self.name, model.id, {}, data)
       end
+    end
+
+    def delete(model)
+      Flatten.adapter.delete(self.name, model.id)
     end
 
     def alternate_id(*fields)
