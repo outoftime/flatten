@@ -1,4 +1,5 @@
 * Deletions
+* Collection filters
 
-* Multiple adapters - MongoDB,  BDB(?), etc.
+* More adapters - MongoDB,  BDB(?), etc.
 * Sessions

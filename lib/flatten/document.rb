@@ -30,11 +30,15 @@ module Flatten
 
     def update(models, *properties)
       Array(models).each do |model|
-        data = Flatten.adapter.read(self.name, model.id)
-        properties.each do |property|
-          update_data(data, model, property)
+        if properties.empty?
+          flatten(model)
+        else
+          data = Flatten.adapter.read(self.name, model.id)
+          properties.each do |property|
+            update_data(data, model, property)
+          end
+          Flatten.adapter.write(self.name, model.id, {}, data)
         end
-        Flatten.adapter.write(self.name, model.id, {}, data)
       end
     end
 

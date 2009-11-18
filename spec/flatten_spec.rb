@@ -147,4 +147,14 @@ describe 'Flatten' do
     FlatPost.get(@id).photos.first.path.should == '1.jpg'
     FlatPost.get(@id).photos.first.caption.should == 'Having fun!'
   end
+
+  it 'should perform full update if no properties given for partial update' do
+    @post.title = 'Different Title'
+    @post.blog = Blog.new do |blog|
+      blog.name = 'Different Blog'
+    end
+    FlatPost.update(@post)
+    FlatPost.get(@id).title.should == 'Different Title'
+    FlatPost.get(@id).blog.name.should == 'Different Blog'
+  end
 end
